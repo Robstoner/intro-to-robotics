@@ -4,7 +4,7 @@ This repo will contain everything related to the ***Introduction to Robotics*** 
 All laboratory homeworks will be saved here, with their implementations, code💻, details and requirements. 
 They will be arranged in their own separate folders📂, with useful links from their respective homework details below.
 
-#### Don't forget your protection glasses 🥽.
+#### Don't forget your protection glasses🥽!
 
 ## Homework 1
 
