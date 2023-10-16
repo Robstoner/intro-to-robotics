@@ -1,4 +1,3 @@
-<br />
 <div align="center">
   <h1>🔌Introduction to Robotics (2023 - 2024)</h1>
 </div>
