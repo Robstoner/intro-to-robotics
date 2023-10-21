@@ -15,10 +15,13 @@ Lab and course notes will also be saved here, in the `Labs` and `Courses` folder
 
 Creating this repository and the file structure.
 
-### Courses
-
+#### Courses
 [Course information](Courses/CourseDetails.md)
 
-### Labs
-
+#### Labs
 [Lab information](Labs/Labs.md)
+
+## Homework 2
+
+[Control an RGB LED using 3 potentiometers, one for each color.](Homeworks/Homework2/Homework2.md)
+

@@ -2,8 +2,7 @@
 
 For this homework we had to create a circuit and an Arduino program to control each color of an RGB LED using a potentiometer. Here is a video of it working:
 
-[![Video](https://img.youtube.com/vi/3aGk3snBxvA/default.png)](https://www.youtube.com/watch?v=3aGk3snBxvA)
-![Video2](Homework2.mp4)
+[![Video](https://img.youtube.com/vi/3aGk3snBxvA/hqdefault.jpg)](https://www.youtube.com/watch?v=3aGk3snBxvA)
 
 ### Objectives:
 - Learn how to use potentiometers to control the brightness of each channel of an RGB LED
