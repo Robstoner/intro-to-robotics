@@ -13,8 +13,8 @@ For this homework we had to create a circuit and an Arduino program to control e
 ### Materials:
 - Arduino UNO
 - 3 potentiometers
-- 1 330 ohm resistor (red LED)
-- 2 220 ohm resistors (green and blue LEDs)
+- 1 220 ohm resistor (red LED)
+- 2 330 ohm resistors (green and blue LEDs)
 - 1 RGB LED (common cathode)
 - 1 breadboard
 - wires
