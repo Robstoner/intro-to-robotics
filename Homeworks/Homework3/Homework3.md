@@ -4,7 +4,7 @@ This homework asked us to recreate an elevator using buttons to choose a floor a
 
 Here it is working:
 
-[![VideoThumbnail]()]()
+[![VideoThumbnail](https://img.youtube.com/vi/ffNfaYAl-1Q/maxresdefault.jpg)](https://youtu.be/ffNfaYAl-1Q)
 
 ### Objectives:
 
@@ -24,6 +24,14 @@ Here it is working:
 - 1 breadboard
 - wires
 
+### Code and difficulties:
+
+The main difficulty was adding the doors closing sound at the start of the "movement", because the moving sound had to be delayed. I had to create another variable to remember when the button was pressed and use the millis() function, so that I would avoid using the delay() function.
+
+One other difficulty was implementing the button debounce for 3 buttons, but I managed to do it by modifying the code from the lab.
+
+https://github.com/Robstoner/intro-to-robotics/blob/892bb0a2a25fae186251add0c921087120585a55/Homeworks/Homework3/elevator/elevator.ino#L1-L132
+
 ### Procedure:
 
 1. Setup the circuit as shown in the pictures below:
@@ -36,3 +44,6 @@ Here it is working:
    - Connect the buzzer to GND and to a digital pin on the Arduino
 2. Open the Arduino IDE and use the sketch in the file [elevator.ino](elevator/elevator.ino) to program the Arduino.
 3. Upload the sketch to the Arduino and press the buttons to move the elevator to that specific floor, by turning off and on the corresponding LED.
+
+![Breadboard](Topdown_Breadboard.jpg)
+![Pinout and breadboard](Pinout_and_Breadboard.jpg)
