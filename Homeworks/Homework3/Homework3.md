@@ -30,7 +30,7 @@ The main difficulty was adding the doors closing sound at the start of the "move
 
 One other difficulty was implementing the button debounce for 3 buttons, but I managed to do it by modifying the code from the lab.
 
-https://github.com/Robstoner/intro-to-robotics/blob/892bb0a2a25fae186251add0c921087120585a55/Homeworks/Homework3/elevator/elevator.ino#L1-L132
+https://github.com/Robstoner/intro-to-robotics/blob/490e2c224d6b6b8e76fd35c06a5265aa046e5b0d/Homeworks/Homework3/elevator/elevator.ino#L1-L136
 
 ### Procedure:
 
