@@ -9,9 +9,9 @@ const int mainLedPin = 5;
 const int elevatorBuzzerPin = 3;
 
 // Inputs
-byte reading[nrOfFloors] = { LOW, LOW, LOW };
-byte prevReading[nrOfFloors] = { LOW, LOW, LOW };
-byte buttonState[nrOfFloors] = { LOW, LOW, LOW };
+byte reading[nrOfFloors] = { HIGH, HIGH, HIGH };
+byte prevReading[nrOfFloors] = { HIGH, HIGH, HIGH };
+byte buttonState[nrOfFloors] = { HIGH, HIGH, HIGH };
 
 // Debounce
 unsigned long prevDebounceTime[nrOfFloors] = { 0, 0, 0 };
@@ -33,9 +33,9 @@ unsigned long buttonPressedTime = 0;
 
 // Doors closing/opening buzzer
 const int doorsTime = 600;
-const int doorsFrequency = 200;
+const int doorsFrequency = 587;
 
-const int elevatorMovingFrequency = 750;
+const int elevatorMovingFrequency = 196;
 
 void setup() {
   for (int i = 0; i < nrOfFloors; ++i) {
@@ -45,6 +45,8 @@ void setup() {
 
   pinMode(mainLedPin, OUTPUT);
   pinMode(elevatorBuzzerPin, OUTPUT);
+
+  digitalWrite(ledFloorPins[0], HIGH);
 
   Serial.begin(serialBaud);
 }
@@ -66,7 +68,7 @@ void loop() {
         buttonState[i] = reading[i];
 
         if (buttonState[i] == HIGH) {
-          Serial.println((String) "Button pressed at floor" + i);
+          Serial.println((String) "Button pressed at floor " + i);
 
           // Only take inputs if elevator is not moving
           if (targetFloor == currentFloor) {
@@ -111,6 +113,7 @@ void loop() {
 
         // Doors opening
         if (currentFloor == targetFloor) {
+          Serial.println((String) "Elevator arrived at floor " + currentFloor);
           tone(elevatorBuzzerPin, doorsFrequency, doorsTime);
         }
       }
@@ -124,6 +127,7 @@ void loop() {
 
         // Doors opening
         if (currentFloor == targetFloor) {
+          Serial.println((String) "Elevator arrived at floor " + currentFloor);
           tone(elevatorBuzzerPin, doorsFrequency, doorsTime);
         }
       }
