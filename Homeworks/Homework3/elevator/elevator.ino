@@ -31,10 +31,10 @@ byte mainLedState = LOW;
 // Button pressed for doors closing
 unsigned long buttonPressedTime = 0;
 
-// Doors closing/opening buzzer
+// Buzzer variables
 const int doorsTime = 600;
-const int doorsFrequency = 587;
-
+const int doorsOpeningFrequency = 587;
+const int doorsClosingFrequency = 587 * 2;
 const int elevatorMovingFrequency = 196;
 
 void setup() {
@@ -78,7 +78,7 @@ void loop() {
 
             // Doors closing
             buttonPressedTime = millis();
-            tone(elevatorBuzzerPin, doorsFrequency, doorsTime);
+            tone(elevatorBuzzerPin, doorsClosingFrequency, doorsTime);
           }
         }
       }
@@ -86,13 +86,12 @@ void loop() {
     prevReading[i] = reading[i];
   }
 
-  // Elevator moving sound after doors closed, but only while elevator is moving
-  if (((millis() - buttonPressedTime) > doorsTime) && (targetFloor != currentFloor)) {
-    tone(elevatorBuzzerPin, elevatorMovingFrequency);
-  }
-
   // Actual elevator code
-  if (targetFloor != currentFloor) {
+  // Check if the floor we want is not the one we're on, and that the doors have closed
+  if (targetFloor != currentFloor && ((millis() - buttonPressedTime) > doorsTime)) {
+    // Elevator moving sound
+    tone(elevatorBuzzerPin, elevatorMovingFrequency);
+
     // Main led blink
     if ((millis() - prevMainLedBlink) > mainLedBlinkTime) {
       mainLedState = !mainLedState;
@@ -101,35 +100,25 @@ void loop() {
       prevMainLedBlink = millis();
     }
 
+    // Switch floors every floorDelay miliseconds (3 seconds)
     // Check if it's going up or down
-    // Then switch floors every floorDelay miliseconds (3 seconds)
-    if (targetFloor > currentFloor) {
-      if ((millis() - prevFloorTime) > floorDelay) {
-        digitalWrite(ledFloorPins[currentFloor], LOW);
-        digitalWrite(ledFloorPins[currentFloor + 1], HIGH);
+    // If it arrived at correct floor buzz the doors opening
+    if ((millis() - prevFloorTime) > floorDelay) {
+      digitalWrite(ledFloorPins[currentFloor], LOW);
 
-        prevFloorTime = millis();
+      prevFloorTime = millis();
+      if (targetFloor > currentFloor) {
         currentFloor++;
-
-        // Doors opening
-        if (currentFloor == targetFloor) {
-          Serial.println((String) "Elevator arrived at floor " + currentFloor);
-          tone(elevatorBuzzerPin, doorsFrequency, doorsTime);
-        }
-      }
-    } else {
-      if ((millis() - prevFloorTime) > floorDelay) {
-        digitalWrite(ledFloorPins[currentFloor], LOW);
-        digitalWrite(ledFloorPins[currentFloor - 1], HIGH);
-
-        prevFloorTime = millis();
+      } else {
         currentFloor--;
+      }
 
-        // Doors opening
-        if (currentFloor == targetFloor) {
-          Serial.println((String) "Elevator arrived at floor " + currentFloor);
-          tone(elevatorBuzzerPin, doorsFrequency, doorsTime);
-        }
+      digitalWrite(ledFloorPins[currentFloor], HIGH);
+
+      // Doors opening
+      if (currentFloor == targetFloor) {
+        Serial.println((String) "Elevator arrived at floor " + currentFloor);
+        tone(elevatorBuzzerPin, doorsOpeningFrequency, doorsTime);
       }
     }
   }
