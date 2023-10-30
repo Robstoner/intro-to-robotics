@@ -25,3 +25,12 @@ Creating this repository and the file structure.
 
 [Control an RGB LED using 3 potentiometers, one for each color.](Homeworks/Homework2/Homework2.md)
 
+## Homework 3
+
+[Create a simulator for an elevator using LEDs as floors.](Homeworks/Homework3/Homework3.md)
+
+We had to use buttons to choose which floor the elevator would move to, with LEDs representing the floors, a buzzer to signify that the elevator is moving and that the doors are closing or opening, and another blinking LED to show that the elevator is moving.
+
+Here it is working:
+
+[![VideoThumbnail](https://img.youtube.com/vi/ffNfaYAl-1Q/maxresdefault.jpg)](https://youtu.be/ffNfaYAl-1Q)
