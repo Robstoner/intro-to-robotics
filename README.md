@@ -33,4 +33,4 @@ We had to use buttons to choose which floor the elevator would move to, with LED
 
 Here it is working:
 
-[![VideoThumbnail](https://img.youtube.com/vi/ffNfaYAl-1Q/maxresdefault.jpg)](https://youtu.be/ffNfaYAl-1Q)
+[![VideoThumbnail](https://img.youtube.com/vi/oSpx1KY0b00/maxresdefault.jpg)](https://youtu.be/oSpx1KY0b00)
