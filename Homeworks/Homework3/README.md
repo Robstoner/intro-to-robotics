@@ -4,7 +4,7 @@ This homework asked us to recreate an elevator using buttons to choose a floor a
 
 Here it is working:
 
-[![VideoThumbnail](https://img.youtube.com/vi/oSpx1KY0b00/maxresdefault.jpg)](https://youtu.be/oSpx1KY0b00)
+[![VideoThumbnail](https://img.youtube.com/vi/oSpx1KY0b00/hqdefault.jpg)](https://youtu.be/oSpx1KY0b00)
 
 ### Objectives:
 
@@ -45,5 +45,7 @@ https://github.com/Robstoner/intro-to-robotics/blob/490e2c224d6b6b8e76fd35c06a52
 2. Open the Arduino IDE and use the sketch in the file [elevator.ino](elevator/elevator.ino) to program the Arduino.
 3. Upload the sketch to the Arduino and press the buttons to move the elevator to that specific floor, by turning off and on the corresponding LED.
 
-![Breadboard](Topdown_Breadboard.jpg)
-![Pinout and breadboard](Pinout_and_Breadboard.jpg)
+<p align="middle" float="left">
+   <img src="Topdown_Breadboard.jpg" height="450px" />
+   <img src="Pinout_and_Breadboard.jpg" height="450px" />
+</p>
