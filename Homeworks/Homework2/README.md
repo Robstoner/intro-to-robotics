@@ -29,8 +29,9 @@ For this homework we had to create a circuit and an Arduino program to control e
     - Connect the middle pin of each potentiometer to the analog pins A5, A4, A3 of the Arduino.
     - Connect the other pins of the potentiometers to the positive and negative rails of the breadboard.
 
-![Circuit1](Breadboard.jpg)
-![Circuit2](Breadboard_and_Arduino.jpg)
-
+<div align="middle" float="left">
+    <img src="Breadboard.jpg" height="450px" />
+    <img src="Breadboard_and_Arduino.jpg" height="450px" />
+</div>
 2. Open the Arduino IDE and use the sketch in the file [RGB_LED_potentiometer.ino](RGB_LED_potentiometer/RGB_LED_potentiometer.ino) to program the Arduino.
 3. Upload the sketch to the Arduino and observe the behavior of the RGB LED as you turn the potentiometers.
