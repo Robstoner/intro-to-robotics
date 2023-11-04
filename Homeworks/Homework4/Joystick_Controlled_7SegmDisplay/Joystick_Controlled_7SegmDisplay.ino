@@ -18,19 +18,19 @@
 const int baudValue = 9600;
 
 // Declare all the segments pins
-const int pinA = 2;
-const int pinB = 3;
-const int pinC = 4;
-const int pinD = 5;
-const int pinE = 6;
-const int pinF = 7;
-const int pinG = 8;
-const int pinDP = 9;
+const int pinA = 4;
+const int pinB = 5;
+const int pinC = 6;
+const int pinD = 7;
+const int pinE = 8;
+const int pinF = 9;
+const int pinG = 10;
+const int pinDP = 11;
 
 // Joystick pins
 const int pinVRx = A0;
 const int pinVRy = A1;
-const int pinSW = 11;
+const int pinSW = 2;
 
 // Joystick variables
 byte swState = LOW;
@@ -56,12 +56,15 @@ struct segments {
   { pinG },
   { pinDP }
 };
+byte segmentStates[segSize] = {
+  LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW
+};
 
 bool commonAnode = false;  // Modify if you have common anode
 
 // Movement
 const int nrDirections = 4;
-short int nextSegmentIndexMatrix[segSize][nrDirections] = {
+const short int nextSegmentIndexMatrix[segSize][nrDirections] = {
   // UP DOWN LEFT RIGHT
   { -1, 6, 5, 1 },   // a
   { 0, 6, 5, -1 },   // b
@@ -73,6 +76,15 @@ short int nextSegmentIndexMatrix[segSize][nrDirections] = {
   { -1, -1, 2, -1 }  // dp
 };
 int currentSegmentIndex = segSize - 1;
+
+// Flicker Segment
+const int flickerInterval = 100;
+unsigned long lastFlicker = 0;
+byte currentSegmentState = HIGH;
+
+// Long press
+unsigned long lastButtonPressTime = 0;
+const int longButtonPressInterval = 2000;
 
 void setup() {
   // Check if the display is common anode and set the state accordingly
@@ -91,19 +103,39 @@ void setup() {
   pinMode(pinVRy, INPUT);
   pinMode(pinSW, INPUT_PULLUP);
 
-  // Initialize DP as HIGH
-  digitalWrite(segments[currentSegmentIndex].pin, !state);
-
   Serial.begin(baudValue);
 }
 
 void loop() {
+  showSegments();
+
+  flickerCurrentSegment();
 
   int direction = readMovement();
 
   if (direction != -1) {
-    moveSegment(currentSegmentIndex, direction);
+    moveSegment(direction);
   }
+
+  swState = digitalRead(pinSW);
+
+  // Button press
+  if (swState != lastSwState) {
+    if (swState == LOW) {
+      // Toggle segment state
+      lastButtonPressTime = millis();
+      segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
+    } else {
+      // Long press - reset all segments to LOW
+      if (millis() - lastButtonPressTime > longButtonPressInterval) {
+        for (int i = 0; i < segSize; ++i) {
+          segmentStates[i] = LOW;
+        }
+      }
+    }
+  }
+
+  lastSwState = swState;
 }
 
 /*
@@ -144,7 +176,7 @@ int readMovement() {
   return -1;
 }
 
-void moveSegment(int &currentSegmentIndex, int direction) {
+void moveSegment(int direction) {
   int nextSegmentIndex = nextSegmentIndexMatrix[currentSegmentIndex][direction];
 
   if (nextSegmentIndex != -1) {
@@ -154,5 +186,26 @@ void moveSegment(int &currentSegmentIndex, int direction) {
     currentSegmentIndex = nextSegmentIndex;
 
     digitalWrite(segments[currentSegmentIndex].pin, !state);
+  }
+}
+
+void toggleSegment() {
+}
+
+void flickerCurrentSegment() {
+
+  if (millis() - lastFlicker > flickerInterval) {
+    currentSegmentState = !currentSegmentState;
+    digitalWrite(segments[currentSegmentIndex].pin, currentSegmentState);
+
+    lastFlicker = millis();
+  }
+}
+
+void showSegments() {
+  for (int i = 0; i < segSize; ++i) {
+    if (i != currentSegmentIndex) {
+      digitalWrite(segments[i].pin, segmentStates[i]);
+    }
   }
 }
