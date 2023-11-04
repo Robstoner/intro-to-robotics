@@ -33,8 +33,7 @@ const int pinVRy = A1;
 const int pinSW = 2;
 
 // Joystick variables
-byte swState = LOW;
-byte lastSwState = LOW;
+byte swState = HIGH;
 int yValue = 0;
 int xValue = 0;
 bool joyMoved = false;
@@ -59,7 +58,7 @@ struct segments {
   { pinG },
   { pinDP }
 };
-byte segmentStates[segSize] = {
+volatile byte segmentStates[segSize] = {
   LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW
 };
 
@@ -86,8 +85,9 @@ unsigned long lastFlicker = 0;
 byte currentSegmentState = HIGH;
 
 // Long press
-unsigned long lastButtonPressTime = 0;
-const int longButtonPressInterval = 2000;
+const int longButtonPressInterval = 2000 * 1000; // Microseconds for interrupt
+volatile unsigned long lastInterruptTime = 0;
+const unsigned long interruptInterval = 100 * 1000; // Microseconds for interrupt
 
 void setup() {
   // Check if the display is common anode and set the state accordingly
@@ -107,6 +107,10 @@ void setup() {
   pinMode(pinVRy, INPUT);
   pinMode(pinSW, INPUT_PULLUP);
 
+  // Button interrupt
+  attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, FALLING); // FALLING when without long press
+  // attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, CHANGE); // CHANGE when with long press
+
   Serial.begin(baudValue);
 }
 
@@ -120,26 +124,6 @@ void loop() {
   if (direction != -1) {
     moveSegment(direction);
   }
-
-  swState = digitalRead(pinSW);
-
-  // Button press
-  if (swState != lastSwState) {
-    if (swState == LOW) {
-      // Toggle segment state
-      lastButtonPressTime = millis();
-      segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
-    } else {
-      // Long press - reset all segments to LOW
-      if (millis() - lastButtonPressTime > longButtonPressInterval) {
-        for (int i = 0; i < segSize; ++i) {
-          segmentStates[i] = LOW;
-        }
-      }
-    }
-  }
-
-  lastSwState = swState;
 }
 
 /*
@@ -154,7 +138,7 @@ int readMovement() {
   xValue = analogRead(pinVRx);
   yValue = analogRead(pinVRy);
 
-  if (yValue > maxThreshold && !joyMoved) { 
+  if (yValue > maxThreshold && !joyMoved) {
     // up
     joyMoved = true;
 
@@ -202,7 +186,38 @@ void moveSegment(int direction) {
   }
 }
 
-void toggleSegment() {
+// Interrupt for button press
+// Not really functional, only works like 50% of the time or less
+void toggleSegmentISR() {
+  // debounce - can't figure out why not working
+
+  // static unsigned long interruptTime = 0;
+  // interruptTime = micros();
+
+  // if (interruptTime - lastInterruptTime > interruptInterval) {
+  //   swState = !swState;
+  //   segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
+  // }
+
+  static unsigned long lastButtonPressTime = 0;
+  swState = !swState;
+
+  if (swState == LOW) {
+    // Toggle segment state
+    lastButtonPressTime = micros();
+    segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
+  } 
+  // else {
+  //   // Long press - reset all segments to LOW
+  //   // not working in interrupt
+  //   if (micros() - lastButtonPressTime > longButtonPressInterval) {
+  //     for (int i = 0; i < segSize; ++i) {
+  //       segmentStates[i] = LOW;
+  //     }
+  //   }
+  // }
+
+  // lastInterruptTime = interruptTime;
 }
 
 void flickerCurrentSegment() {
