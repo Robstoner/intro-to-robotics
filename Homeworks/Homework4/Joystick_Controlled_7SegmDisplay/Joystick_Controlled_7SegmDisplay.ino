@@ -44,6 +44,9 @@ const int maxThreshold = 600;
 // 7 segment variables
 const int segSize = 8;
 byte state = LOW;
+
+// Use a struct to store the pins
+// So I can use the same indexes with any pin configuration
 struct segments {
   int pin;
 } segments[segSize] = {
@@ -96,6 +99,7 @@ void setup() {
   for (int i = 0; i < segSize; i++) {
     pinMode(segments[i].pin, OUTPUT);
 
+    // Set all pins to LOW
     digitalWrite(segments[i].pin, state);
   }
 
@@ -150,24 +154,29 @@ int readMovement() {
   xValue = analogRead(pinVRx);
   yValue = analogRead(pinVRy);
 
-  if (yValue > maxThreshold && !joyMoved) {
+  if (yValue > maxThreshold && !joyMoved) { 
+    // up
     joyMoved = true;
 
     return 0;
   } else if (yValue < minThreshold && !joyMoved) {
+    // down
     joyMoved = true;
 
     return 1;
   } else if (xValue > maxThreshold && !joyMoved) {
+    // left
     joyMoved = true;
 
     return 2;
   } else if (xValue < minThreshold && !joyMoved) {
+    // right
     joyMoved = true;
 
     return 3;
   }
 
+  // back to center
   if ((xValue >= minThreshold && xValue <= maxThreshold) && (yValue >= minThreshold && yValue <= maxThreshold)) {
     joyMoved = false;
     return -1;
@@ -176,6 +185,10 @@ int readMovement() {
   return -1;
 }
 
+/*
+ * Move the current segment according to the matrix received in the lab
+ * using the index to pin struct array
+*/
 void moveSegment(int direction) {
   int nextSegmentIndex = nextSegmentIndexMatrix[currentSegmentIndex][direction];
 
@@ -202,6 +215,8 @@ void flickerCurrentSegment() {
   }
 }
 
+// Display the segments based on the segmentStates array
+// Excluding the current one (it is flickering)
 void showSegments() {
   for (int i = 0; i < segSize; ++i) {
     if (i != currentSegmentIndex) {
