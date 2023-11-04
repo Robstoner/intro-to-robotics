@@ -26,8 +26,6 @@ const int pinE = 6;
 const int pinF = 7;
 const int pinG = 8;
 const int pinDP = 9;
-// How much to the right the pins are shifted from 0 (for array indexing)
-const int pinShift = 2;
 
 // Joystick pins
 const int pinVRx = A0;
@@ -45,48 +43,56 @@ const int maxThreshold = 600;
 
 // 7 segment variables
 const int segSize = 8;
-int segments[segSize] = {
-  pinA, pinB, pinC, pinD, pinE, pinF, pinG, pinDP
+byte state = LOW;
+struct segments {
+  int pin;
+} segments[segSize] = {
+  { pinA },
+  { pinB },
+  { pinC },
+  { pinD },
+  { pinE },
+  { pinF },
+  { pinG },
+  { pinDP }
 };
-int segment = 0;
-byte state = HIGH;
-byte dpState = LOW;
 
 bool commonAnode = false;  // Modify if you have common anode
 
 // Movement
 const int nrDirections = 4;
-byte nextSegmentMatrix[segSize][nrDirections] = {
+short int nextSegmentIndexMatrix[segSize][nrDirections] = {
   // UP DOWN LEFT RIGHT
-  { 0, pinG, pinF, pinB },      // a
-  { pinA, pinG, pinF, 0 },      // b
-  { pinG, pinD, pinE, pinDP },  // c
-  { pinG, 0, pinE, pinC },      // d
-  { pinG, pinD, 0, pinC },      // e
-  { pinA, pinG, 0, pinB },      // f
-  { pinA, pinD, 0, 0 },         // g
-  { 0, 0, pinC, 0 }             // dp
-}; 
-int currentSegment = pinDP;
+  { -1, 6, 5, 1 },   // a
+  { 0, 6, 5, -1 },   // b
+  { 6, 3, 4, 7 },    // c
+  { 6, -1, 4, 2 },   // d
+  { 6, 3, -1, 2 },   // e
+  { 0, 6, -1, 1 },   // f
+  { 0, 3, -1, -1 },  // g
+  { -1, -1, 2, -1 }  // dp
+};
+int currentSegmentIndex = segSize - 1;
 
 void setup() {
+  // Check if the display is common anode and set the state accordingly
+  if (commonAnode) {
+    state = !state;
+  }
+
   // Initialize all the pins
   for (int i = 0; i < segSize; i++) {
-    pinMode(segments[i], OUTPUT);
+    pinMode(segments[i].pin, OUTPUT);
 
-    digitalWrite(segments[i], LOW);
+    digitalWrite(segments[i].pin, state);
   }
 
   pinMode(pinVRx, INPUT);
   pinMode(pinVRy, INPUT);
   pinMode(pinSW, INPUT_PULLUP);
 
-  digitalWrite(currentSegment, HIGH);
-
-  // TODO: Check if commonAnode should be modified here
-  if (commonAnode) {
-    state = !state;
-  }
+  // Initialize DP as HIGH
+  digitalWrite(segments[currentSegmentIndex].pin, !state);
 
   Serial.begin(baudValue);
 }
@@ -96,18 +102,8 @@ void loop() {
   int direction = readMovement();
 
   if (direction != -1) {
-    moveSegment(currentSegment, direction);
+    moveSegment(currentSegmentIndex, direction);
   }
-
-
-  swState = digitalRead(pinSW);
-
-  if (swState != lastSwState) {
-    if (swState == LOW) {
-    }
-  }
-
-  lastSwState = swState;
 }
 
 /*
@@ -148,17 +144,15 @@ int readMovement() {
   return -1;
 }
 
-void moveSegment(int &currentSegment, int direction) {
-  // substract pinShift to be able to use the pin's number as an array index
-  // !! not good because pins have to be in specific order
-  int nextSegment = nextSegmentMatrix[currentSegment - pinShift][direction];
+void moveSegment(int &currentSegmentIndex, int direction) {
+  int nextSegmentIndex = nextSegmentIndexMatrix[currentSegmentIndex][direction];
 
-  if (nextSegment != 0) {
+  if (nextSegmentIndex != -1) {
 
-    digitalWrite(currentSegment, LOW);
+    digitalWrite(segments[currentSegmentIndex].pin, state);
 
-    currentSegment = nextSegment;
+    currentSegmentIndex = nextSegmentIndex;
 
-    digitalWrite(currentSegment, HIGH);
+    digitalWrite(segments[currentSegmentIndex].pin, !state);
   }
 }
