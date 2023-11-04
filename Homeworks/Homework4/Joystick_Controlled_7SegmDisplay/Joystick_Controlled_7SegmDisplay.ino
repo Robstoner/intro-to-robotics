@@ -34,6 +34,7 @@ const int pinSW = 2;
 
 // Joystick variables
 byte swState = HIGH;
+byte lastSwState = HIGH;
 int yValue = 0;
 int xValue = 0;
 bool joyMoved = false;
@@ -85,9 +86,10 @@ unsigned long lastFlicker = 0;
 byte currentSegmentState = HIGH;
 
 // Long press
-const int longButtonPressInterval = 2000 * 1000; // Microseconds for interrupt
+unsigned long lastButtonPressTime = 0;
+const int longButtonPressInterval = 2000;
 volatile unsigned long lastInterruptTime = 0;
-const unsigned long interruptInterval = 100 * 1000; // Microseconds for interrupt
+const unsigned long interruptInterval = 100 * 1000;  // Microseconds for interrupt
 
 void setup() {
   // Check if the display is common anode and set the state accordingly
@@ -108,7 +110,7 @@ void setup() {
   pinMode(pinSW, INPUT_PULLUP);
 
   // Button interrupt
-  attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, FALLING); // FALLING when without long press
+  attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, FALLING);  // FALLING when without long press
   // attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, CHANGE); // CHANGE when with long press
 
   Serial.begin(baudValue);
@@ -124,6 +126,15 @@ void loop() {
   if (direction != -1) {
     moveSegment(direction);
   }
+
+  // swState = digitalRead(pinSW);
+
+  // // Button press
+  // if (swState != lastSwState) {
+  //   toggleButton();
+  // }
+
+  // lastSwState = swState;
 }
 
 /*
@@ -186,6 +197,22 @@ void moveSegment(int direction) {
   }
 }
 
+void toggleButton() {
+
+  if (swState == LOW) {
+    // Toggle segment state
+    lastButtonPressTime = millis();
+    segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
+  } else {
+    // Long press - reset all segments to LOW
+    if (millis() - lastButtonPressTime > longButtonPressInterval) {
+      for (int i = 0; i < segSize; ++i) {
+        segmentStates[i] = LOW;
+      }
+    }
+  }
+}
+
 // Interrupt for button press
 // Not really functional, only works like 50% of the time or less
 void toggleSegmentISR() {
@@ -206,11 +233,11 @@ void toggleSegmentISR() {
     // Toggle segment state
     lastButtonPressTime = micros();
     segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
-  } 
+  }
   // else {
   //   // Long press - reset all segments to LOW
   //   // not working in interrupt
-  //   if (micros() - lastButtonPressTime > longButtonPressInterval) {
+  //   if (micros() - lastButtonPressTime > longButtonPressInterval * 1000) {
   //     for (int i = 0; i < segSize; ++i) {
   //       segmentStates[i] = LOW;
   //     }
