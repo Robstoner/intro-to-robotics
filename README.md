@@ -25,12 +25,27 @@ Creating this repository and the file structure.
 
 [Control an RGB LED using 3 potentiometers, one for each color.](Homeworks/Homework2/README.md)
 
+Here is a video of it working:
+
+[![Homework 2 Video](https://img.youtube.com/vi/qFyUlfFiYTQ/hqdefault.jpg)](https://youtu.be/qFyUlfFiYTQ)
+
 ## Homework 3
 
 [Create a simulator for an elevator using LEDs as floors.](Homeworks/Homework3/README.md)
 
-We had to use buttons to choose which floor the elevator would move to, with LEDs representing the floors, a buzzer to signify that the elevator is moving and that the doors are closing or opening, and another blinking LED to show that the elevator is moving.
+We had to use buttons to choose which floor the elevator would move to, with LEDs representing the floors, a buzzer to signify that the elevator is moving and that the doors are closing or opening, 
+and another blinking LED to show that the elevator is moving.
 
 Here it is working:
 
-[![VideoThumbnail](https://img.youtube.com/vi/oSpx1KY0b00/maxresdefault.jpg)](https://youtu.be/oSpx1KY0b00)
+[![Homework 3 Video](https://img.youtube.com/vi/oSpx1KY0b00/hqdefault.jpg)](https://youtu.be/oSpx1KY0b00)
+
+## Homework 4
+
+[Draw on a 7 segment display using a joystick.](Homeworks/Homework4/README.md)
+
+We had to use a joystick to control the movement between the segments of a 7 segment display, toggling them on and off using the joystick button and resetting them all with a long press.
+
+Here is a video of it working:
+
+[![Homework 4 Video](https://img.youtube.com/vi/lFQB_rZMXGM/hqdefault.jpg)](https://youtu.be/lFQB_rZMXGM)
