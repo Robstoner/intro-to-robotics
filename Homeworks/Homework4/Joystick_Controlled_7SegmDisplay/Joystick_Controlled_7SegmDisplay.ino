@@ -32,6 +32,13 @@ const int pinVRx = A0;
 const int pinVRy = A1;
 const int pinSW = 2;
 
+// Buzzer
+const int buzzerPin = 3;
+const int moveFrequency = 1200;
+const int toggleFrequency = 440;
+const int resetFrequency = 4400;
+const int buzzTime = 350;
+
 // Joystick variables
 byte swState = HIGH;
 byte lastSwState = HIGH;
@@ -86,12 +93,14 @@ unsigned long lastFlicker = 0;
 byte currentSegmentState = HIGH;
 
 // Long press
-unsigned long lastButtonPressTime = 0;
-const int longButtonPressInterval = 2000;
+const unsigned long longButtonPressInterval = 2000;
+volatile unsigned long lastButtonPressTime = 0;
 
 // Interrupt
+const unsigned long debounceInterval = 200;
 volatile unsigned long lastInterruptTime = 0;
-const unsigned long interruptInterval = 100 * 1000;  // Microseconds for interrupt
+volatile bool buttonPressed = false;
+volatile bool longButtonPress = false;
 
 void setup() {
   // Check if the display is common anode and set the state accordingly
@@ -111,9 +120,10 @@ void setup() {
   pinMode(pinVRy, INPUT);
   pinMode(pinSW, INPUT_PULLUP);
 
+  pinMode(buzzerPin, OUTPUT);
+
   // Button interrupt
-  attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, FALLING);  // FALLING when without long press - barely working
-  // attachInterrupt(digitalPinToInterrupt(pinSW), toggleSegmentISR, CHANGE); // CHANGE when with long press - not working
+  attachInterrupt(digitalPinToInterrupt(pinSW), buttonPressISR, CHANGE);  // CHANGE so i can control either falling or rising, for short/long press
 
   Serial.begin(baudValue);
 }
@@ -126,18 +136,34 @@ void loop() {
   int direction = readMovement();
 
   if (direction != -1) {
+    // tone(buzzerPin, moveFrequency, buzzTime);
     moveSegment(direction);
   }
 
-  // Simple button press
-  swState = digitalRead(pinSW);
+  // Button press with interrupt
+  if (buttonPressed) {
+    tone(buzzerPin, toggleFrequency, buzzTime);
+    segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
 
-  // Button press
-  if (swState != lastSwState) {
-    toggleSegment();
+    buttonPressed = false;
   }
 
-  lastSwState = swState;
+  if (longButtonPress) {
+    tone(buzzerPin, resetFrequency, buzzTime);
+    resetSegments();
+
+    longButtonPress = false;
+  }
+
+  // Simple button press
+  // swState = digitalRead(pinSW);
+
+  // // Button press
+  // if (swState != lastSwState) {
+  //   toggleSegment();
+  // }
+
+  // lastSwState = swState;
 }
 
 /*
@@ -201,6 +227,7 @@ void moveSegment(int direction) {
 }
 
 // Toggle the current segment state
+// For simple button press - no interrupts
 void toggleSegment() {
 
   if (swState == LOW) {
@@ -210,43 +237,45 @@ void toggleSegment() {
   } else {
     // Long press - reset all segments to LOW
     if (millis() - lastButtonPressTime > longButtonPressInterval) {
-      for (int i = 0; i < segSize; ++i) {
-        segmentStates[i] = LOW;
-      }
+      resetSegments();
     }
   }
 }
 
+void resetSegments() {
+
+  for (int i = 0; i < segSize; ++i) {
+    segmentStates[i] = LOW;
+  }
+}
+
 // Interrupt for button press
-// Not really functional, only works like 50% of the time or less
-void toggleSegmentISR() {
-  // debounce - can't figure out why not working
+void buttonPressISR() {
+  static unsigned long interruptTime = 0;
+  static byte buttonValue = HIGH;
 
-  // static unsigned long interruptTime = 0;
-  // interruptTime = micros();
+  interruptTime = micros();
 
-  // if (interruptTime - lastInterruptTime > interruptInterval) {
-  //   segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
-  // }
+  buttonValue = digitalRead(pinSW);
 
-  // static unsigned long lastButtonPressTime = 0;
+  if (buttonValue == LOW) {
+    // FALLING - toggle with debounce
+    if (interruptTime - lastInterruptTime > debounceInterval * 1000) {
+      lastButtonPressTime = interruptTime;
+      buttonPressed = true;
 
-  // if (swState == LOW) {
-  //   // Toggle segment state
-  //   lastButtonPressTime = micros();
-  //   segmentStates[currentSegmentIndex] = !segmentStates[currentSegmentIndex];
-  // }
-  // else {
-  //   // Long press - reset all segments to LOW
-  //   // not working in interrupt
-  //   if (micros() - lastButtonPressTime > longButtonPressInterval * 1000) {
-  //     for (int i = 0; i < segSize; ++i) {
-  //       segmentStates[i] = LOW;
-  //     }
-  //   }
-  // }
-
-  // lastInterruptTime = interruptTime;
+      lastInterruptTime = interruptTime;
+    }
+  } else {
+    // RISING - long press
+    if (interruptTime - lastInterruptTime > debounceInterval * 1000) {
+      if (interruptTime - lastButtonPressTime > longButtonPressInterval * 1000) {
+        longButtonPress = true;
+      }
+    }
+    
+    lastInterruptTime = interruptTime;
+  }
 }
 
 void flickerCurrentSegment() {
