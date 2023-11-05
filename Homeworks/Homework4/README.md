@@ -12,6 +12,7 @@ Here it is working:
 - Blink the current segment
 - Toggle each segment on and off using the joystick button
 - Reset all segments to off using the joystick button long press
+- Use interrupts
 
 ### Materials:
 
@@ -25,11 +26,14 @@ Here it is working:
 
 ### Code and difficulties:
 
-The biggest difficulty for this homework was making the interrupt work. I had to use the CHANGE interrupt so that I could get both RISING and FALLING interrupts.
+The biggest difficulty for this homework was making the interrupt work. I had to use the CHANGE interrupt so that I could get both RISING and FALLING interrupts, 
+for a toggle and for when the button is depressed, to check if it was a long press.
 I also had to apply debounce to it so that it wouldn't trigger multiple times when I would want it to only toggle once. Unfortunately the debounce is not working
 perfectly (you can see it in the video on the top-left segment pressing twice), though it is working well enough.
 
 I also added a buzzer to the circuit so that it would beep when a segment was toggled and when the reset button was pressed.
+
+https://github.com/Robstoner/intro-to-robotics/blob/d2218d01533ada84bc9ef81b28c876aa926a8f63/Homeworks/Homework4/Joystick_Controlled_7SegmDisplay/Joystick_Controlled_7SegmDisplay.ino#L1-L299
 
 ### Procedure:
 
@@ -47,7 +51,7 @@ I also added a buzzer to the circuit so that it would beep when a segment was to
 3. Upload the sketch to the Arduino and move through the segments using the joystick, toggling them on or off with the joystick's button. Long press the button to reset all the segments to off.
 
 <p align="middle" float="left">
-  <img src="TopDownView.jpeg" width="450px" />
-  <img src="TopDownViewFull.jpeg" width="450px" />
-  <img src="SideView.jpeg" width="450px" />
+   <img src="TopDownViewFull.jpeg" width="450px" />
+   <img src="SideView.jpeg" width="450px" />
+   <img src="TopDownView.jpeg" width="450px" />
 </p>
