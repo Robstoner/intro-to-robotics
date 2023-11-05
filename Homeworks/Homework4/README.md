@@ -53,5 +53,5 @@ https://github.com/Robstoner/intro-to-robotics/blob/d2218d01533ada84bc9ef81b28c8
 <p align="middle" float="left">
    <img src="TopDownViewFull.jpeg" width="450px" />
    <img src="SideView.jpeg" width="450px" />
-   <img src="TopDownView.jpeg" width="450px" />
+   <img src="TopDownView.jpeg" height="450px" />
 </p>
