@@ -33,7 +33,7 @@ perfectly (you can see it in the video on the top-left segment pressing twice), 
 
 I also added a buzzer to the circuit so that it would beep when a segment was toggled and when the reset button was pressed.
 
-https://github.com/Robstoner/intro-to-robotics/blob/d2218d01533ada84bc9ef81b28c876aa926a8f63/Homeworks/Homework4/Joystick_Controlled_7SegmDisplay/Joystick_Controlled_7SegmDisplay.ino#L1-L299
+https://github.com/Robstoner/intro-to-robotics/blob/f6b86e03548083b7a93d8ed647dc66c7c6ca03fc/Homeworks/Homework4/Joystick_Controlled_7SegmDisplay/Joystick_Controlled_7SegmDisplay.ino#L1-L293
 
 ### Procedure:
 
