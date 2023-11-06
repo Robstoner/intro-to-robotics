@@ -214,15 +214,9 @@ int readMovement() {
  * using the index to pin struct array
 */
 void moveSegment(int direction) {
-  int nextSegmentIndex = nextSegmentIndexMatrix[currentSegmentIndex][direction];
 
-  if (nextSegmentIndex != -1) {
-
-    digitalWrite(segments[currentSegmentIndex].pin, state);
-
-    currentSegmentIndex = nextSegmentIndex;
-
-    digitalWrite(segments[currentSegmentIndex].pin, !state);
+  if (nextSegmentIndexMatrix[currentSegmentIndex][direction] != -1) {
+    currentSegmentIndex = nextSegmentIndexMatrix[currentSegmentIndex][direction];
   }
 }
 
