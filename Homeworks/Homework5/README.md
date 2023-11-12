@@ -30,6 +30,7 @@ The main idea of this homework was relatively simple, and didn't need a lot of t
 but I ran into a lot of problems with the interrupts double clicking or not clicking at all, and with the lap times not being shown when they should be.
 Unfortunately I didn't manage to fix the double clicking, especially for lap save button, but the rest works well.
 
+https://github.com/Robstoner/intro-to-robotics/blob/501dfbf3ef393aada8654d97b6c7355b39ebb91b/Homeworks/Homework5/Stopwatch_4bit_7segm/Stopwatch_4bit_7segm.ino#L1-L320
 
 ### Procedure:
 
