@@ -68,7 +68,7 @@ byte resetReading = HIGH;
 byte lastResetReading = HIGH;
 
 // Variables for laps and lap viewing
-bool hasBeenReset = false;
+bool hasBeenReset = false;              // The clock was reset to 0
 volatile bool lapButtonPressed = false;
 bool viewingLaps = false;
 const int nrLaps = 4;
@@ -151,6 +151,7 @@ void loop() {
 
   resetButtonDebounce();
 
+  // Reset laps and everything associated to them
   if (reset) {
     if (viewingLaps) {
       Serial.println("Reset laps.");
@@ -158,6 +159,9 @@ void loop() {
         laps[i].whole = 0;
         laps[i].decimal = 0;
       }
+
+      currentLapNr = 0;
+      nextShownLap = 0;
 
       hasBeenReset = false;
       viewingLaps = false;
@@ -170,6 +174,10 @@ void loop() {
   }
 
   if (!paused) {
+    // To not allow the viewing of lap times if clock has not been reset yet while paused
+    // Without it would allow going through the laps while clock was paused but not at 0
+    // after you would reset it once, and also reset the laps and start again from scratch
+    hasBeenReset = false;
     runningClock();
   } else {
     pausedClock();
@@ -226,11 +234,14 @@ void pausedClock() {
     number.whole = laps[nextShownLap].whole;
     number.decimal = laps[nextShownLap].decimal;
 
+    Serial.println((String) "Showing lap: " + number.whole + "." + number.decimal);
+    
     nextShownLap++;
     if (nextShownLap >= nrLaps) {
       nextShownLap = 0;
     }
   }
+  // Set to false in case it didn't enter the if
   lapButtonPressed = false;
 
   if (reset) {
