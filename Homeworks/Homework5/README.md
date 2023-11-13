@@ -43,7 +43,8 @@ https://github.com/Robstoner/intro-to-robotics/blob/501dfbf3ef393aada8654d97b6c7
    - Connect the shift register to the positive and negative rails of the breadboard
    - Connect the buttons to the negative rail, and to digital pins on the Arduino (lap save and pause/start button to interrupt pins)
 2. Open the Arduino IDE and use the sketch in the file [Stopwatch_4bit_7segm.ino](Stopwatch_4bit_7segm/Stopwatch_4bit_7segm.ino) to program the Arduino.
-3. Upload the sketch to the Arduino and 
+3. Upload the sketch to the Arduino and use the stopwatch as you would the one on your phone. 
+   The right button is start/stop, the middle one is for saving laps and scrolling through them, and the left one is to reset.
 
 <p align="middle" float="left">
    <img src="TopDownView1.jpeg" width="450px" />
