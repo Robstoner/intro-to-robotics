@@ -4,8 +4,8 @@
 
 This repo will contain everything related to the ***Introduction to Robotics*** course from the ***Faculty of Mathematics and Computer Science***🏫 ***, at the University of Bucharest***.
 All laboratory homeworks will be saved here, with their implementations, code💻, details and requirements. 
-They will be arranged in the `Homeworks` folder, each in it's own subfolder, with useful links from below.
-Lab and course notes will also be saved here, in the `Labs` and `Courses` folders.
+They will be arranged in the [`Homeworks`](Homeworks) folder, each in it's own subfolder, with useful links from below.
+Lab and course notes will also be saved here, in the [`Labs`](Labs) and [`Courses`](Courses) folders.
 
 <div align="center"> 
   <b>Don't forget your protection glasses🥽!</b>
@@ -59,3 +59,13 @@ We had to turn a 4 digit 7 segment display into a stopwatch, with 3 buttons whic
 Here it is working:
 
 [![Homework 5 Video](https://img.youtube.com/vi/eH_DGDg0QDk/hqdefault.jpg)](https://youtu.be/eH_DGDg0QDk)
+
+## Homework 6
+
+[Create a Smart Environment Monitor and Logger](Homeworks/Homework6)
+
+We had to create a system which would log data taken from two sensors, show the current environment state on an RGB LED, and use a complex menu system to change settings for the sensors, to show the logged data, to reset it, and to change how the LED functions.
+
+Here is a video of it working:
+
+[![Homework 6 Video](https://img.youtube.com/vi/9nzhbSkcmiI/hqdefault.jpg)](https://youtu.be/9nzhbSkcmiI)
