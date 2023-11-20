@@ -13,6 +13,10 @@
  * By Schmidt Robert
 */
 
+#include <EEPROM.h>
+
+const int baudValue = 9600;
+
 // Sensor pins
 const int trigPin = 5;
 const int echoPin = 6;
@@ -25,6 +29,11 @@ const int redLedPin = 11;
 
 // Input variables
 char incomingByte = '0';
+int incomingValue = 0;
+bool readingSetting = false;
+
+// 1 - sampling interval, 2 - ultrasonic threshold, 3 - ldr threshold
+byte settingToRead = 0;
 
 // Menu settings
 // 0 - Main, 1,2,3,4 - The 4 submenus
@@ -32,9 +41,12 @@ char currentMenu = '0';
 bool menuShown = false;
 
 // Sensor settings
-short int samplingInterval = 1;  // seconds
-int ultrasonicThresholdMin = 10;
-int ldrThreshold = 250;
+byte samplingInterval = 1;  // seconds
+const int samplingIntervalPosition = 10;
+byte ultrasonicThreshold = 10;  // 1-255
+const int ultrasonicThresholdPosition = 20;
+short int ldrThreshold = 250;  // 1-1023
+const int ldrThresholdPosition = 30;
 
 // Data logging
 unsigned long lastSamplingTime = 0;
@@ -62,7 +74,13 @@ void setup() {
   pinMode(greenLedPin, OUTPUT);
   pinMode(blueLedPin, OUTPUT);
 
-  Serial.begin(9600);
+  // Initialize serial connection
+  Serial.begin(baudValue);
+
+  // Read the settings from the persisten memory
+  EEPROM.get(samplingIntervalPosition, samplingInterval);
+  EEPROM.get(ultrasonicThresholdPosition, ultrasonicThreshold);
+  EEPROM.get(ldrThresholdPosition, ldrThreshold);
 }
 
 void loop() {
@@ -84,12 +102,18 @@ void loop() {
         showingData = false;
       }
     }
-  } else if (!menuShown) {
+  } 
+  
+  if (!menuShown && !showingData && !readingSetting) {
     printMenus(currentMenu);
     menuShown = true;
   }
 
-  if (Serial.available()) {
+  if (readingSetting) {
+    readSettings(settingToRead);
+  }
+
+  if (Serial.available() && !readingSetting) {
     incomingByte = (char)Serial.read();
 
     if (menuShown) {
@@ -136,7 +160,7 @@ void shiftArrays() {
 void automaticLedControls() {
   digitalWrite(blueLedPin, LOW);
 
-  if (ultrasonicSamples[maxSamples - 1] < ultrasonicThresholdMin || ldrSamples[maxSamples - 1] < ldrThreshold) {
+  if (ultrasonicSamples[maxSamples - 1] < ultrasonicThreshold || ldrSamples[maxSamples - 1] < ldrThreshold) {
     digitalWrite(greenLedPin, LOW);
     digitalWrite(redLedPin, HIGH);
   } else {
@@ -187,6 +211,61 @@ void readLedValues() {
   blueLedValue = Serial.parseInt();
   if (blueLedValue > 255) { blueLedValue = 255; }
   if (blueLedValue < 0) { blueLedValue = 0; }
+}
+
+void readSettings(byte setting) {
+
+  switch (setting) {
+    case 1:
+      if (Serial.available()) {
+        incomingValue = Serial.parseInt();
+
+        if (incomingValue < 1 || incomingValue > 10) {
+          Serial.println(F("Incorrent value inserted, input a number between 1 and 10: "));
+        } else {
+          samplingInterval = incomingValue;
+          // Add it to EEPROM to be stored persistently
+          EEPROM.put(samplingIntervalPosition, samplingInterval);
+
+          readingSetting = false;
+        }
+      }
+
+      break;
+    case 2:
+      if (Serial.available()) {
+        incomingValue = Serial.parseInt();
+        if (incomingValue < 1 || incomingValue > 255) {
+          Serial.println(F("Incorrent value inserted, input a number between 1 and 255: "));
+        } else {
+          ultrasonicThreshold = incomingValue;
+          // Add it to EEPROM to be stored persistently
+          EEPROM.put(ultrasonicThresholdPosition, ultrasonicThreshold);
+
+          readingSetting = false;
+        }
+      }
+
+      break;
+    case 3:
+      if (Serial.available()) {
+        incomingValue = Serial.parseInt();
+        if (incomingValue < 1 || incomingValue > 1023) {
+          Serial.println(F("Incorrent value inserted, input a number between 1 and 1023: "));
+        } else {
+          ldrThreshold = incomingValue;
+          // Add it to EEPROM to be stored persistently
+          EEPROM.put(ldrThresholdPosition, ldrThreshold);
+
+          readingSetting = false;
+        }
+      }
+
+      break;
+    default:
+      readingSetting = false;
+      break;
+  }
 }
 
 // Used a switch case to choose which menu to print, instead of 5 different functions
@@ -273,13 +352,8 @@ void chooseOption(char option) {
       if (currentMenu == '1') {
         Serial.println(F("Please input a new sensor sampling interval (1-10 s):"));
 
-        while (!Serial.available()) {}
-        samplingInterval = Serial.parseInt();
-        while (samplingInterval < 1 || samplingInterval > 10) {
-          Serial.println(F("Incorrent value inserted, input a number between 1 and 10: "));
-          while (!Serial.available()) {}
-          samplingInterval = Serial.parseInt();
-        }
+        readingSetting = true;
+        settingToRead = 1;
 
         menuShown = false;
         break;
@@ -325,13 +399,8 @@ void chooseOption(char option) {
       if (currentMenu == '1') {
         Serial.println(F("Please input a new minimum threshold for the ultrasonic sensor (1-30 cm): "));
 
-        while (!Serial.available()) {}
-        ultrasonicThresholdMin = Serial.parseInt();
-        while (ultrasonicThresholdMin < 1 || ultrasonicThresholdMin > 30) {
-          Serial.println(F("Incorrent value inserted, input a number between 1 and 30: "));
-          while (!Serial.available()) {}
-          ultrasonicThresholdMin = Serial.parseInt();
-        }
+        readingSetting = true;
+        settingToRead = 2;
 
         menuShown = false;
         break;
@@ -343,7 +412,7 @@ void chooseOption(char option) {
         Serial.print(F("  Sampling interval: "));
         Serial.println(samplingInterval, DEC);
         Serial.print(F("  Ultrasonic sensor minimum threshold: "));
-        Serial.println(ultrasonicThresholdMin, DEC);
+        Serial.println(ultrasonicThreshold, DEC);
         Serial.print(F("  LDR threshold: "));
         Serial.println(ldrThreshold, DEC);
 
@@ -375,13 +444,8 @@ void chooseOption(char option) {
       if (currentMenu == '1') {
         Serial.println(F("Please input a new minimum threshold for the light dependent resistor (1-1023): "));
 
-        while (!Serial.available()) {}
-        ldrThreshold = Serial.parseInt();
-        while (ldrThreshold < 1 || ldrThreshold > 1023) {
-          Serial.println(F("Incorrent value inserted, input a number between 1 and 1023: "));
-          while (!Serial.available()) {}
-          ldrThreshold = Serial.parseInt();
-        }
+        readingSetting = true;
+        settingToRead = 3;
 
         menuShown = false;
         break;
