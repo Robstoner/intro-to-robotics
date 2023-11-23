@@ -1,4 +1,4 @@
-## Homework 3 - 7 segment display drawing
+## Homework 4 - 7 segment display drawing
 
 This homework asked us to move and draw on a 7 segment display using a joystick.
 

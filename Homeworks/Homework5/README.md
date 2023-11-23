@@ -1,4 +1,4 @@
-## Homework 3 - Stopwatch on 4 bit 7 segment display
+## Homework 5 - Stopwatch on 4 bit 7 segment display
 
 This homework asked us to make a stopwatch using a 4 bit 7 segment display and 3 buttons.
 The stopwatch should be able to start, stop, reset, save lap times and show the last 4 saved lap times.

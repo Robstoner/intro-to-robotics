@@ -1,4 +1,4 @@
-## Homework 3 - Smart Environment Monitor and Logger
+## Homework 6 - Smart Environment Monitor and Logger
 
 This homework asked us to create a program which would log data from 2 different sensors, an ultrasonic sensor and a light sensor, and use an RGB LED to show the status of the environment.
 It also includes a complex menu system, which allows the user to change the settings of the program, such as the threshold for the ultrasonic sensor, the threshold for the light sensor, switch the LED from automatic mode to manual mode, and change the color of the LED in manual mode.
