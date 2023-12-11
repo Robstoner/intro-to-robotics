@@ -28,9 +28,9 @@ Here it is working:
 
 ### Code and difficulties:
 
-The hardest part of this homework was coming up with a game that would be fun to play on an 8x8 matrix.
+The hardest part of this homework was coming up with the idea for a game that would be fun to play on an 8x8 matrix.
 
-
+All the code can be found in the folder name [`theSearchOfIsaac`](/theSearchOfIsaac)
 
 <p align="middle" float="left">
    <img src="StartGame.jpeg" width="450px" />
