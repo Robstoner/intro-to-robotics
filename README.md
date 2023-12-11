@@ -79,3 +79,9 @@ We had to create our own game using an 8x8 matrix and a joystick. I made a "Find
 Here it is working:
 
 [![Homework 7 Video](https://img.youtube.com/vi/5YXyHo6wRdI/hqdefault.jpg)](https://youtu.be/5YXyHo6wRdI)
+
+## Homework 8
+
+[Menu on a 16x2 LCD](Homeworks/Homework8)
+
+This was a continuation of Homework 7 and our matrix game project. I made a small menu on the 16x2 LCD provided that you can scroll through using the joystick.
