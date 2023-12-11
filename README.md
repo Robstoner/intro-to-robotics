@@ -69,3 +69,13 @@ We had to create a system which would log data taken from two sensors, show the 
 Here is a video of it working:
 
 [![Homework 6 Video](https://img.youtube.com/vi/9nzhbSkcmiI/hqdefault.jpg)](https://youtu.be/9nzhbSkcmiI)
+
+## Homework 7
+
+[Game on an 8x8 matrix](Homeworks/Homework7)
+
+We had to create our own game using an 8x8 matrix and a joystick. I made a "Find the treasure" game slightly inspired from The Binding of Isaac with it's multiple rooms and obstacles.
+
+Here it is working:
+
+[![Homework 7 Video](https://img.youtube.com/vi/5YXyHo6wRdI/hqdefault.jpg)](https://youtu.be/5YXyHo6wRdI)
